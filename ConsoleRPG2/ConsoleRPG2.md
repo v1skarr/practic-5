@@ -308,32 +308,32 @@ class Program
 ---
 ```
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/1.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/1.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/2.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/2.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/3.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/3.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/4.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/4.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/5.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/5.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/6.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/6.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/7.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/7.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/8.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/8.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/9.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/9.png">
 </picture>
 <picture>
-  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/10.png.png">
+  <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/10.png">
 </picture>
