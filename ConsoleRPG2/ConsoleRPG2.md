@@ -574,7 +574,6 @@ else
 }
 ```
 ---
-```
 <picture>
   <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/1.png.png">
 </picture>
