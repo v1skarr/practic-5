@@ -6,574 +6,307 @@
 ```csharp
 using System;
 
-// Статы всего
-int currentHP = 100;
-int maxHP = 100;
-
-int currentEnrg = 35;
-int maxEnrg = 100;
-
-// Расходники
-int currentHealCount = 3;
-int maxHealCount = 3;
-int currentEnergizer = 3;
-int maxEnergizer = 3;
-
-//статы врагов
-int currentMercHP = 70;
-int maxMercHP = 100;
-int currentMercE = 65;
-int maxMercE = 100;
-
-int currentNjHp = 100;
-int maxNjHP = 120;
-int currentNjE = 80;
-int maxNjE = 110;
-
-int currentMsHP = 130;
-int MaxMsHP = 170;
-int currentMsE = 110;
-int maxMsE = 130;
-
-// Переменные для защиты
-bool PlayerDefend = false;
-
-
-Random rnd = new Random();
-Console.WriteLine("===1-ЫЙ БОЙ ===");
-Console.WriteLine();
-Console.WriteLine("=== БОЙ НАЧАЛСЯ ===");
-
-
-// Цикл боя
-// Сражение идет, пока живы и Игрок вражина
-while (currentHP > 0 && currentMercHP > 0)
+class Program
 {
-
-    PlayerDefend = false;
-
-    // Интерфейс тут
-    // Здоровье игрока
-    int scaleLengthHP = 10;
-    int filledCellsHP = currentHP * scaleLengthHP / maxHP;
-    int emptyCellsHP = scaleLengthHP - filledCellsHP;
-    Console.Write("Здоровье: [");
-    for (int i = 0; i < filledCellsHP; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsHP; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentHP}/{maxHP})");
-
-    //Энергия игрока
-    int scaleLengthE = 10;
-    int filledCellsE = currentEnrg * scaleLengthE / maxEnrg;
-    int emptyCellsE = scaleLengthE - filledCellsE;
-    Console.Write("Энергия:  [");
-    for (int i = 0; i < filledCellsE; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsE; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentEnrg}/{maxEnrg})");
-
-    // Хил
-    int scaleLengthHeal = 3;
-    int filledCellsHC = currentHealCount * scaleLengthHeal / maxHealCount;
-    int emptyCellsHC = scaleLengthHeal - filledCellsHC;
-    Console.Write("ДЫХАНИЕ ЖИЗНИ: [");
-    for (int i = 0; i < filledCellsHC; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsHC; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentHealCount}/{maxHealCount})");
-
-    // Энерджайзер
-    int scaleLengthEnergizer = 3;
-    int filledCellsEn = currentEnergizer * scaleLengthEnergizer / maxEnergizer;
-    int emptyCellsEn = scaleLengthEnergizer - filledCellsEn;
-    Console.Write("КОНЦЕНТРАЦИЯ ЭНЕРГИИ: [");
-    for (int i = 0; i < filledCellsEn; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsEn; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentEnergizer}/{maxEnergizer})");
-
-    Console.WriteLine("---------------------------------------------");
-
-    //Здоровье
-    int MercFilledCellsHP = currentMercHP * scaleLengthE / maxMercHP;
-    int MercEmptyCellsHP = scaleLengthE - MercFilledCellsHP;
-    Console.Write("Наёмник из банды: [");
-    for (int i = 0; i < MercFilledCellsHP; i++) Console.Write("#");
-    for (int i = 0; i < MercEmptyCellsHP; i++) Console.Write("-");
-    Console.WriteLine($"] ({Math.Max(0, currentMercHP)}/{maxMercHP})");
-
-    //Энергия врага
-    int MercFilledCellsE2 = currentMercE * scaleLengthE / maxMercE;
-    int MercEmptyCellsE2 = scaleLengthE - MercFilledCellsE2;
-    Console.Write("Энергия Наёмника: [");
-    for (int i = 0; i < MercFilledCellsE2; i++) Console.Write("#");
-    for (int i = 0; i < MercEmptyCellsE2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentMercE}/{maxMercE})");
-
-    Console.WriteLine();
-
-    //Выбор действий тут
-    int userChoice = 0;
-    do
+    static void Main()
     {
-        Console.WriteLine("ВЫБЕРИТЕ ДЕЙСТВИЕ:");
-        Console.WriteLine("1. АТАКА");
-        Console.WriteLine("2. СПЕЦ. АТАКА (требует 50 энергии)");
-        Console.WriteLine("3. ЗАЩИТА");
-        Console.WriteLine("4. ДЫХАНИЕ ЖИЗНИ");
-        Console.WriteLine("5. КОНЦЕНТРАЦИЯ ДУХА");
+        // --- ПОДГОТОВКА И ИНИЦИАЛИЗАЦИЯ ДАННЫХ ---
+        Console.WriteLine("Начинается проверка боевой готовности пограничной заставы.");
+        Console.WriteLine("Загрузка данных о снаряжении, маршрутах и силах противника...\n");
 
-        string? input = Console.ReadLine();
-        if (int.TryParse(input, out userChoice))
+        //  Массив снаряжения богатыря
+        string[] equipment = new string[5] {
+            "Булатный меч",
+            "Кованый щит",
+            "Колчан каленых стрел",
+            "Горбушка хлеба",
+            "Шелковый шатер"
+        };
+
+        // Параллельные массивы для вражеских сил:
+        // чин супостата, число воинов в сотне, боевая ярость (+ здоровье для боя)
+        string[] enemyRank = new string[3] { "Степной дозорный", "Лесной разбойник", "Степной хан" };
+        int[] enemyWarriors = new int[3] { 25, 60, 100 };
+        int[] enemyFury = new int[3] { 10, 20, 35 };
+        int[] enemyHP = new int[3] { 35, 65, 130 };
+
+        // 3. Массив верст патрулирования границы
+        int[] verstsCovered = new int[5] { 15, 22, 18, 30, 25 };
+
+        // Лог ударов богатыря для 5 раундов (Пункт 6)
+        int[] strikePowerLog = new int[5];
+
+        Random randomGenerator = new Random();
+        int heroMaxHP = 100;
+        int heroCurrentHP = heroMaxHP;
+        int breadCount = 3; // Количество горбушек хлеба
+
+        //вывод амуниции
+        Console.WriteLine("Выводим полный список амуниции перед отправлением:");
+        int slotNumber = 1;
+        foreach (string item in equipment)
         {
-            if (userChoice >= 1 && userChoice <= 5)
+            Console.WriteLine($"Слот №{slotNumber}: {item}");
+            slotNumber++;
+        }
+        Console.WriteLine();
+
+        //Исп. щита 
+        Console.WriteLine("Вражеские лучники заметили богатыря и начинают обстрел!");
+        Console.WriteLine("Требуется срочно найти средство защиты в инвентаре...");
+
+        int shieldIndex = Array.IndexOf(equipment, "Кованый щит");
+        bool hasShield = shieldIndex != -1;     // есть ли щит в снаряжении
+
+        if (hasShield)
+        {
+            Console.WriteLine($"Защита найдена! Предмет 'Кованый щит' расположен под индексом: {shieldIndex}");
+
+            while (true)
             {
-                if (userChoice == 2 && currentEnrg < 50)
+                Console.Write("Прикрыться щитом от стрел? (1 - да, 2 - нет): ");
+                string shieldChoice = Console.ReadLine();
+
+                if (shieldChoice == "1")
                 {
-                    Console.WriteLine("Недостаточно энергии!\n");
-                    userChoice = 0;
+                    Console.WriteLine("Богатырь успевает закрыться щитом. Стрелы не нанесли вреда.\n");
+                    break;
                 }
-                else if (userChoice == 4 && currentHealCount <= 0)
+                else if (shieldChoice == "2")
                 {
-                    Console.WriteLine("Закончились расходники!\n");
-                    userChoice = 0;
+                    Console.WriteLine("Богатырь решает рискнуть без щита, и стрела вонзается в плечо (-15 HP).\n");
+                    heroCurrentHP -= 15;
+                    break;
                 }
-                else if (userChoice == 5 && currentEnergizer <= 0)
+                else
                 {
-                    Console.WriteLine("Закончились расходники!\n");
-                    userChoice = 0;
+                    Console.WriteLine("Неверный выбор. Лучники целятся, решайте скорее!");
                 }
-            }
-            else
-            {
-                Console.WriteLine("Не вариант!\n");
             }
         }
         else
         {
-            Console.WriteLine("Не вариант!\n");
+            Console.WriteLine("Щит не найден! Ситуация критическая, богатырь ранен стрелой (-15 HP).\n");
+            heroCurrentHP -= 15;
         }
-    } while (userChoice == 0);
 
+        Console.WriteLine("Начинается рукопашная сеча!");
+        Console.WriteLine("Нажмите любую клавишу для продвижения по раундам боя...");
+        Console.ReadKey();
+        Console.Clear();
 
-    //Действие
-    Console.WriteLine();
-    if (userChoice == 1)
-    {
-        int playerDamage = rnd.Next(12, 22);
-        currentMercHP -= playerDamage;
-        Console.WriteLine($"Игрок нанес {playerDamage} урона.");
-    }
-    else if (userChoice == 2)
-    {
-        currentEnrg -= 50;
-        int Ultimate = rnd.Next(35, 50);
-        currentMercHP -= Ultimate;
-        Console.WriteLine($"Ронин использует спец. атаку и наносит {Ultimate} урона!");
-    }
-    else if (userChoice == 3)
-    {
-        PlayerDefend = true;
-        Console.WriteLine("Ронин встал в оборонительную стойку. Урон будет снижен!");
-    }
-    else if (userChoice == 4)
-    {
-        currentHealCount--;
-        currentHP = Math.Min(maxHP, currentHP + 30);
-        Console.WriteLine("Вы использовали Дыхание жизни и восстановили здоровье.");
-    }
-    else if (userChoice == 5)
-    {
-        currentEnergizer--;
-        currentEnrg = Math.Min(maxEnrg, currentEnrg + 40);
-        Console.WriteLine("Вы использовали Концентрацию духа и восстановили энергию.");
-    }
+        //  Бой 
+        bool heroDefeated = false;
 
-
-
-
-
-    if (currentMercHP <= 0)
-    {
-        Console.WriteLine("\nНаёмник из банды повержен!");
-
-        break;
-    }
-
-    //Ответка
-    int enemyDamage = rnd.Next(8, 16);
-
-    if (PlayerDefend)
-    {
-        enemyDamage /= 2;
-        Console.WriteLine("Благодаря защите вы заблокировали часть урона!");
-    }
-
-    currentHP -= enemyDamage;
-    Console.WriteLine($"Наёмник нанес вам {enemyDamage} урона.");
-
-
-    currentEnrg = Math.Min(maxEnrg, currentEnrg + 10);
-
-
-
-}
-
-//финал первого боя
-if (currentHP <= 0)
-{
-    Console.WriteLine("Поражение! Ронин погиб в бою.");
-}
-else
-{
-    Console.WriteLine("Победа!");
-}
-
-Console.WriteLine("Перед следующим боем Ронин отдахнул и набрался сил");
-currentHealCount--;
-currentHP = Math.Min(maxHP, currentHP + 30);
-
-Console.WriteLine("---------------------------------------------");
-Console.WriteLine("===2-ЫЙ БОЙ ===");
-Console.WriteLine();
-Console.WriteLine("=== БОЙ НАЧАЛСЯ ===");
-
-while (currentHP > 0 && currentNjHp > 0)
-{
-
-    PlayerDefend = false;
-
-    int scaleLengthHP2 = 10;
-    int filledCellsHP2 = currentHP * scaleLengthHP2 / maxHP;
-    int emptyCellsHP2 = scaleLengthHP2 - filledCellsHP2;
-    Console.Write("Здоровье: [");
-    for (int i = 0; i < filledCellsHP2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsHP2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentHP}/{maxHP})");
-
-    int scaleLengthE2 = 10;
-    int filledCellsE2 = currentEnrg * scaleLengthE2 / maxEnrg;
-    int emptyCellsE2 = scaleLengthE2 - filledCellsE2;
-    Console.Write("Энергия:  [");
-    for (int i = 0; i < filledCellsE2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsE2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentEnrg}/{maxEnrg})");
-
-    int scaleLengthHeal2 = 3;
-    int filledCellsHC2 = currentHealCount * scaleLengthHeal2 / maxHealCount;
-    int emptyCellsHC2 = scaleLengthHeal2 - filledCellsHC2;
-    Console.Write("ДЫХАНИЕ ЖИЗНИ: [");
-    for (int i = 0; i < filledCellsHC2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsHC2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentHealCount}/{maxHealCount})");
-
-    int scaleLengthEnergizer2 = 3;
-    int filledCellsEn2 = currentEnergizer * scaleLengthEnergizer2 / maxEnergizer;
-    int emptyCellsEn2 = scaleLengthEnergizer2 - filledCellsEn2;
-    Console.Write("КОНЦЕНТРАЦИЯ ЭНЕРГИИ: [");
-    for (int i = 0; i < filledCellsEn2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsEn2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentEnergizer}/{maxEnergizer})");
-
-    Console.WriteLine("---------------------------------------------");
-
-    int NjFilledCellsHP = currentNjHp * scaleLengthE2 / maxNjHP;
-    int NjEmptyCellsHP = scaleLengthE2 - NjFilledCellsHP;
-    Console.Write("Ниндзя клана: [");
-    for (int i = 0; i < NjFilledCellsHP; i++) Console.Write("#");
-    for (int i = 0; i < NjEmptyCellsHP; i++) Console.Write("-");
-    Console.WriteLine($"] ({Math.Max(0, currentNjHp)}/{maxNjHP})");
-
-    //Энергия врага
-    int NjFilledCellsE = currentNjE * scaleLengthE2 / maxNjE;
-    int NjEmptyCellsE = scaleLengthE2 - NjFilledCellsE;
-    Console.Write("Энергия Ниндзя: [");
-    for (int i = 0; i < NjFilledCellsE; i++) Console.Write("#");
-    for (int i = 0; i < NjEmptyCellsE; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentNjE}/{maxNjE})");
-
-    Console.WriteLine();
-
-    //Выбор действий тут
-    int userChoice2 = 0;
-    do
-    {
-        Console.WriteLine("ВЫБЕРИТЕ ДЕЙСТВИЕ:");
-        Console.WriteLine("1. АТАКА");
-        Console.WriteLine("2. СПЕЦ. АТАКА (требует 50 энергии)");
-        Console.WriteLine("3. ЗАЩИТА");
-        Console.WriteLine("4. ДЫХАНИЕ ЖИЗНИ");
-        Console.WriteLine("5. КОНЦЕНТРАЦИЯ ДУХА");
-
-        string? input = Console.ReadLine();
-        if (int.TryParse(input, out userChoice2))
+        for (int r = 0; r < 5; r++)
         {
-            if (userChoice2 >= 1 && userChoice2 <= 5)
+            Console.WriteLine($"\n--- Раунд {r + 1} ---");
+
+            // В первых 3 раундах - уникальные враги, в 4 и 5 - остатки орды
+            string currentEnemyName = r < 3 ? enemyRank[r] : "Остатки вражеского арьергарда";
+            int currentEnemyHP = r < 3 ? enemyHP[r] : randomGenerator.Next(30, 60);
+            int enemyFuryBonus = r < 3 ? enemyFury[r] / 10 : 0; // ярость усиливает удар врага
+
+            Console.WriteLine($"Перед вами враг: {currentEnemyName} | Здоровье врага: [{currentEnemyHP} HP]");
+            // Бой с врагом идёт, пока кто то не помрёт
+            while (currentEnemyHP > 0 && heroCurrentHP > 0)
             {
-                if (userChoice2 == 2 && currentEnrg < 50)
+                bool shieldRaised = false; // щит действует только на один ответный удар врага
+                bool turnDone = false;
+
+                // Ход богатыря
+                while (!turnDone)
                 {
-                    Console.WriteLine("Недостаточно энергии!\n");
-                    userChoice2 = 0;
+                    Console.WriteLine($"\nЗдоровье Богатыря: {heroCurrentHP} / {heroMaxHP} HP | Здоровье врага: {currentEnemyHP} HP | Горбушек хлеба: {breadCount}");
+                    Console.WriteLine("Выберите действие богатыря:");
+                    Console.WriteLine("1. Нанести удар Булатным мечом (Ближний бой: 25-35 урона)");
+                    Console.WriteLine("2. Выстрелить из лука калеными стрелами (Дальний бой: 17-26 урона)");
+                    Console.WriteLine("3. Съесть горбушку хлеба (+25 HP)");
+                    if (hasShield)
+                    {
+                        Console.WriteLine("4. Прикрыться щитом (урон врага вдвое меньше, но только на этот ход)");
+                    }
+
+                    Console.Write(hasShield ? "Ваш выбор (1-4): " : "Ваш выбор (1-3): ");
+                    string choice = Console.ReadLine();
+                    int damageToEnemy;
+
+                    if (choice == "1")
+                    {
+                        damageToEnemy = randomGenerator.Next(25, 36);
+                        Console.WriteLine($"Богатырь заносит Булатный меч и наносит урон: {damageToEnemy}");
+                        currentEnemyHP -= damageToEnemy;
+                        strikePowerLog[r] += damageToEnemy; // суммарная сила ударов за раунд
+                        turnDone = true;
+                    }
+                    else if (choice == "2")
+                    {
+                        damageToEnemy = randomGenerator.Next(17, 27);
+                        Console.WriteLine($"Богатырь спускает тетиву, каленые стрелы наносят урон: {damageToEnemy}");
+                        currentEnemyHP -= damageToEnemy;
+                        strikePowerLog[r] += damageToEnemy;
+                        turnDone = true;
+                    }
+                    else if (choice == "3")
+                    {
+                        if (breadCount <= 0)
+                        {
+                            Console.WriteLine("Горбушек больше не осталось! Выберите другое действие.");
+                        }
+                        else if (heroCurrentHP >= heroMaxHP)
+                        {
+                            Console.WriteLine("У богатыря полное здоровье! Горбушка хлеба не используется.");
+                        }
+                        else
+                        {
+                            heroCurrentHP += 25;
+                            if (heroCurrentHP > heroMaxHP) heroCurrentHP = heroMaxHP;
+                            breadCount--;
+                            Console.WriteLine($"Богатырь съел горбушку хлеба и восстановил здоровье. Осталось горбушек: {breadCount}");
+                            turnDone = true;
+                        }
+                    }
+                    else if (choice == "4" && hasShield)
+                    {
+                        shieldRaised = true;
+                        Console.WriteLine("Богатырь поднимает Кованый щит и готовится принять удар.");
+                        turnDone = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверный выбор. Сосредоточьтесь, супостат наступает!");
+                    }
                 }
-                else if (userChoice2 == 4 && currentHealCount <= 0)
+
+                // Враг пал - ответной атаки нет
+                if (currentEnemyHP <= 0)
                 {
-                    Console.WriteLine("Закончились расходники!\n");
-                    userChoice2 = 0;
+                    break;
                 }
-                else if (userChoice2 == 5 && currentEnergizer <= 0)
+
+                // Ответка
+                Console.WriteLine("\nВраг устоял на ногах и бежит в контратаку!");
+                int enemyAttack = randomGenerator.Next(15, 36) + enemyFuryBonus;
+                Console.WriteLine($"Базовый урон супостата: {enemyAttack}");
+                if (shieldRaised)
                 {
-                    Console.WriteLine("Закончились расходники!\n");
-                    userChoice2 = 0;
+                    enemyAttack /= 2;
+                    Console.WriteLine($"Кованый щит блокирует половину натиска! Полученный урон снижен до: {enemyAttack}");
+                    shieldRaised = false; // щит опущен, действие закончилось
                 }
+
+                heroCurrentHP -= enemyAttack;
+
+                if (heroCurrentHP <= 0)
+                {
+                    heroCurrentHP = 0;
+                    Console.WriteLine("\nПОРАЖЕНИЕ! Враг ранил богатыря насмерть.");
+                    heroDefeated = true;
+                    break;
+                }
+
+                Console.WriteLine($"Враг нанес удар. У богатыря осталось {heroCurrentHP} HP.");
             }
-            else
+
+            // Богатырь погиб 
+            if (heroDefeated)
             {
-                Console.WriteLine("Не вариант!\n");
+                break;
             }
+
+            // Враг повержен
+            Console.WriteLine($"\nИсход раунда: ПОБЕДА! Враг {currentEnemyName} пал сраженным.");
+            Console.WriteLine("Богатырь построил Шелковый шатер и отдохнул после битвы. Восстановлено +10 HP.");
+            heroCurrentHP += 10;
+            if (heroCurrentHP > heroMaxHP) heroCurrentHP = heroMaxHP;
+
+            Console.WriteLine("\nНажмите любую клавишу для перехода к следующему этапу...");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        // итоги и аналитика
+        if (heroDefeated)
+        {
+            Console.WriteLine("====================================================");
+            Console.WriteLine("БОГАТЫРЬ ПАЛ В БОЮ!");
+            Console.WriteLine("Врагов оказалось слишком много, здоровье героя иссякло.");
+            Console.WriteLine("====================================================\n");
         }
         else
         {
-            Console.WriteLine("Не вариант!\n");
+            Console.WriteLine("====================================================");
+            Console.WriteLine("СЛАВНАЯ ПОБЕДА! Все рубежи княжества успешно защищены!");
+            Console.WriteLine("Богатырь возвращается на заставу с триумфом.");
+            Console.WriteLine("====================================================\n");
         }
-    } while (userChoice2 == 0);
 
-    //Действие
-    Console.WriteLine();
-    if (userChoice2 == 1)
-    {
-        int playerDamage = rnd.Next(12, 22);
-        currentNjHp -= playerDamage;
-        Console.WriteLine($"Игрок нанес {playerDamage} урона.");
-    }
-    else if (userChoice2 == 2)
-    {
-        currentEnrg -= 50;
-        int Ultimate = rnd.Next(35, 50);
-        currentNjHp -= Ultimate;
-        Console.WriteLine($"Ронин использует спец. атаку и наносит {Ultimate} урона!");
-    }
-    else if (userChoice2 == 3)
-    {
-        PlayerDefend = true;
-        Console.WriteLine("Ронин встал в оборонительную стойку. Урон будет снижен!");
-    }
-    else if (userChoice2 == 4)
-    {
-        currentHealCount--;
-        currentHP = Math.Min(maxHP, currentHP + 30);
-        Console.WriteLine("Вы использовали Дыхание жизни и восстановили здоровье.");
-    }
-    else if (userChoice2 == 5)
-    {
-        currentEnergizer--;
-        currentEnrg = Math.Min(maxEnrg, currentEnrg + 40);
-        Console.WriteLine("Вы использовали Концентрацию духа и восстановили энергию.");
-    }
-    if (currentNjHp <= 0)
-    {
-        Console.WriteLine("\nНиндзя клана повержен!");
+        Console.WriteLine("Переходим к анализу результатов патрулирования территории.");
 
-        break;
-    }
-
-    //Ответка
-    int enemyDamage = rnd.Next(8, 16);
-
-    if (PlayerDefend)
-    {
-        enemyDamage /= 2;
-        Console.WriteLine("Благодаря защите вы заблокировали часть урона!");
-    }
-
-    currentHP -= enemyDamage;
-    Console.WriteLine($"Ниндзя нанес вам {enemyDamage} урона.");
-
-
-    currentEnrg = Math.Min(maxEnrg, currentEnrg + 10);
-
-
-
-}
-if (currentHP <= 0)
-{
-    Console.WriteLine("Поражение! Ронин погиб в бою.");
-}
-else
-{
-    Console.WriteLine("Победа!");
-}
-Console.WriteLine("Перед следующим боем Ронин отдахнул и набрался сил");
-currentHealCount--;
-currentHP = Math.Min(maxHP, currentHP + 30);
-
-Console.WriteLine("---------------------------------------------");
-Console.WriteLine("===ФИНАЛЬНЫЙ БОЙ ===");
-Console.WriteLine();
-Console.WriteLine("=== БОЙ НАЧАЛСЯ ===");
-
-while (currentHP > 0 && currentMsHP > 0)
-{
-
-    PlayerDefend = false;
-
-    int scaleLengthHP2 = 10;
-    int filledCellsHP2 = currentHP * scaleLengthHP2 / maxHP;
-    int emptyCellsHP2 = scaleLengthHP2 - filledCellsHP2;
-    Console.Write("Здоровье: [");
-    for (int i = 0; i < filledCellsHP2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsHP2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentHP}/{maxHP})");
-
-    int scaleLengthE2 = 10;
-    int filledCellsE2 = currentEnrg * scaleLengthE2 / maxEnrg;
-    int emptyCellsE2 = scaleLengthE2 - filledCellsE2;
-    Console.Write("Энергия:  [");
-    for (int i = 0; i < filledCellsE2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsE2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentEnrg}/{maxEnrg})");
-
-    int scaleLengthHeal2 = 3;
-    int filledCellsHC2 = currentHealCount * scaleLengthHeal2 / maxHealCount;
-    int emptyCellsHC2 = scaleLengthHeal2 - filledCellsHC2;
-    Console.Write("ДЫХАНИЕ ЖИЗНИ: [");
-    for (int i = 0; i < filledCellsHC2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsHC2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentHealCount}/{maxHealCount})");
-
-    int scaleLengthEnergizer2 = 3;
-    int filledCellsEn2 = currentEnergizer * scaleLengthEnergizer2 / maxEnergizer;
-    int emptyCellsEn2 = scaleLengthEnergizer2 - filledCellsEn2;
-    Console.Write("КОНЦЕНТРАЦИЯ ЭНЕРГИИ: [");
-    for (int i = 0; i < filledCellsEn2; i++) Console.Write("#");
-    for (int i = 0; i < emptyCellsEn2; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentEnergizer}/{maxEnergizer})");
-
-    Console.WriteLine("---------------------------------------------");
-
-    int MsFilledCellsHP = currentMsHP * scaleLengthE2 / MaxMsHP;
-    int MsEmptyCellsHP = scaleLengthE2 - MsFilledCellsHP;
-    Console.Write("Мастер меча: [");
-    for (int i = 0; i < MsFilledCellsHP; i++) Console.Write("#");
-    for (int i = 0; i < MsEmptyCellsHP; i++) Console.Write("-");
-    Console.WriteLine($"] ({Math.Max(0, currentMsHP)}/{MaxMsHP})");
-
-    //Энергия врага
-    int MsFilledCellsE = currentMsE * scaleLengthE2 / maxMsE;
-    int MsEmptyCellsE = scaleLengthE2 - MsFilledCellsE;
-    Console.Write("Энергия Ниндзя: [");
-    for (int i = 0; i < MsFilledCellsE; i++) Console.Write("#");
-    for (int i = 0; i < MsEmptyCellsE; i++) Console.Write("-");
-    Console.WriteLine($"] ({currentMsE}/{maxMsE})");
-
-    Console.WriteLine();
-
-    //Выбор действий тут
-    int userChoice2 = 0;
-    do
-    {
-        Console.WriteLine("ВЫБЕРИТЕ ДЕЙСТВИЕ:");
-        Console.WriteLine("1. АТАКА");
-        Console.WriteLine("2. СПЕЦ. АТАКА (требует 50 энергии)");
-        Console.WriteLine("3. ЗАЩИТА");
-        Console.WriteLine("4. ДЫХАНИЕ ЖИЗНИ");
-        Console.WriteLine("5. КОНЦЕНТРАЦИЯ ДУХА");
-
-        string? input = Console.ReadLine();
-        if (int.TryParse(input, out userChoice2))
+        //сумма урона вручную в цикле
+        int totalDamage = 0;
+        for (int i = 0; i < strikePowerLog.Length; i++)
         {
-            if (userChoice2 >= 1 && userChoice2 <= 5)
+            totalDamage += strikePowerLog[i];
+        }
+        Console.WriteLine($"Суммарный богатырский урон за все раунды: {totalDamage} единиц.");
+
+        //максимум верст вручную в цикле
+        int maxVersts = verstsCovered[0];
+        for (int i = 1; i < verstsCovered.Length; i++)
+        {
+            if (verstsCovered[i] > maxVersts)
             {
-                if (userChoice2 == 2 && currentEnrg < 50)
-                {
-                    Console.WriteLine("Недостаточно энергии!\n");
-                    userChoice2 = 0;
-                }
-                else if (userChoice2 == 4 && currentHealCount <= 0)
-                {
-                    Console.WriteLine("Закончились расходники!\n");
-                    userChoice2 = 0;
-                }
-                else if (userChoice2 == 5 && currentEnergizer <= 0)
-                {
-                    Console.WriteLine("Закончились расходники!\n");
-                    userChoice2 = 0;
-                }
-            }
-            else
-            {
-                Console.WriteLine("Не вариант!\n");
+                maxVersts = verstsCovered[i];
             }
         }
-        else
+        Console.WriteLine($"Самый дальний выезд богатыря (максимум верст): {maxVersts} верст.");
+
+        //сортировка лога ударов через Array.Sort
+        Array.Sort(strikePowerLog);
+        Console.Write("Список ударов после сортировки (по возрастанию силы): ");
+        foreach (int strike in strikePowerLog)
         {
-            Console.WriteLine("Не вариант!\n");
+            Console.Write($"{strike} ");
         }
-    } while (userChoice2 == 0);
+        Console.WriteLine();
 
-    //Действие
-    Console.WriteLine();
-    if (userChoice2 == 1)
-    {
-        int playerDamage = rnd.Next(12, 22);
-        currentMsHP -= playerDamage;
-        Console.WriteLine($"Игрок нанес {playerDamage} урона.");
+        //разворот массива верст через Array.Reverse
+        Console.Write("Прямой путь по верстам: ");
+        foreach (int v in verstsCovered)
+        {
+            Console.Write($"{v} ");
+        }
+        Console.WriteLine();
+
+        Array.Reverse(verstsCovered);
+
+        Console.Write("Обратный путь по верстам (массив развернут): ");
+        foreach (int verst in verstsCovered)
+        {
+            Console.Write($"{verst} ");
+        }
+        Console.WriteLine("\n");
+        // Сводка по вражеским силам
+        int totalEnemyHP = 0;
+        int totalEnemyWarriors = 0;
+        for (int i = 0; i < enemyHP.Length; i++)
+        {
+            totalEnemyHP += enemyHP[i];
+            totalEnemyWarriors += enemyWarriors[i];
+        }
+        Console.WriteLine($"Общая жизненная сила нападавших супостатов: {totalEnemyHP} HP.");
+        Console.WriteLine($"Общее число воинов во вражеских сотнях: {totalEnemyWarriors}.");
+
+        Console.WriteLine("\nВсе запланированные действия программы успешно выполнены.");
+        Console.WriteLine("Работа с одномерными массивами завершена.");
+        Console.WriteLine("Нажмите любую клавишу для выхода из программы...");
+        Console.ReadKey();
     }
-    else if (userChoice2 == 2)
-    {
-        currentEnrg -= 50;
-        int Ultimate = rnd.Next(35, 50);
-        currentMsHP -= Ultimate;
-        Console.WriteLine($"Ронин использует спец. атаку и наносит {Ultimate} урона!");
-    }
-    else if (userChoice2 == 3)
-    {
-        PlayerDefend = true;
-        Console.WriteLine("Ронин встал в оборонительную стойку. Урон будет снижен!");
-    }
-    else if (userChoice2 == 4)
-    {
-        currentHealCount--;
-        currentHP = Math.Min(maxHP, currentHP + 30);
-        Console.WriteLine("Вы использовали Дыхание жизни и восстановили здоровье.");
-    }
-    else if (userChoice2 == 5)
-    {
-        currentEnergizer--;
-        currentEnrg = Math.Min(maxEnrg, currentEnrg + 40);
-        Console.WriteLine("Вы использовали Концентрацию духа и восстановили энергию.");
-    }
-    if (currentMsHP <= 0)
-    {
-        Console.WriteLine("\nМастер меча повержен!");
-
-        break;
-    }
-
-    //Ответка
-    int enemyDamage = rnd.Next(8, 16);
-
-    if (PlayerDefend)
-    {
-        enemyDamage /= 2;
-        Console.WriteLine("Благодаря защите вы заблокировали часть урона!");
-    }
-
-    currentHP -= enemyDamage;
-    Console.WriteLine($"Мечник нанес вам {enemyDamage} урона.");
-
-
-    currentEnrg = Math.Min(maxEnrg, currentEnrg + 10);
-
-
-
-}
-if (currentHP <= 0)
-{
-    Console.WriteLine("Поражение! Ронин погиб в бою.");
-}
-else
-{
-    Console.WriteLine("Победа! Игра пройдена!");
 }
 ```
 ---
+```
 <picture>
   <img src="https://github.com/v1skarr/practic-5/blob/main/ConsoleRPG2/1.png.png">
 </picture>
